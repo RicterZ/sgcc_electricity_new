@@ -7,7 +7,7 @@ import requests
 from const import *
 
 
-class SensorUpdator:
+class SensorUpdater:
 
     def __init__(self, base_url: str, token: str):
         self.base_url = base_url[:-1] if base_url.endswith("/") else base_url
@@ -32,6 +32,7 @@ class SensorUpdator:
             last_updated = datetime.now().strftime("%Y-%m")
         else:
             last_updated = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+
         if present_date:
             request_body = {
                 "state": sensorState,
@@ -53,8 +54,8 @@ class SensorUpdator:
 
         try:
             response = requests.post(url, json=request_body, headers=headers)
-            logging.debug(
-                f"Homeassistant REST API invoke, POST on {url}. response[{response.status_code}]: {response.content}")
-            logging.info(f"Homeassistant sensor {sensorName} state updated: {sensorState}{sensorUnit}")
+            logging.info(
+                f"Home Assistant REST API invoke, POST on {url}. response[{response.status_code}]: {response.content}")
+            logging.info(f"Home Assistant sensor {sensorName} state updated: {sensorState}{sensorUnit}")
         except Exception as e:
-            logging.error(f"Homeassistant REST API invoke failed, reason is {e}")
+            logging.error(f"Home Assistant REST API invoke failed, reason is {e}")
