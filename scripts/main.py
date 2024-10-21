@@ -12,7 +12,7 @@ import schedule
 
 from const import *
 from data_fetcher import DataFetcher
-from sensor_updator import SensorUpdater
+from sensor_updater import SensorUpdater
 
 BALANCE = 0.0
 PUSHPLUS_TOKEN = []
@@ -73,14 +73,15 @@ def run_task(data_fetcher: DataFetcher, sensor_updater: SensorUpdater):
                         logging.info(f'The current balance of user id {user_id_list[i]} is {balance_list[i]} CNY less than {BALANCE}CNY, notice has been sent, please pay attention to check and recharge.')
             if last_daily_usage_list[i] is not None:
                 sensor_updater.update(DAILY_USAGE_SENSOR_NAME + prefix, last_daily_date_list[i], last_daily_usage_list[i], USAGE_UNIT)
+                sensor_updater.update(DAILY_USAGE_SENSOR_NAME + prefix, datetime.now().strftime('%Y-%m-%d'), 0.0, USAGE_UNIT)
             if yearly_usage_list[i] is not None:
                 sensor_updater.update(YEARLY_USAGE_SENSOR_NAME + prefix, None, yearly_usage_list[i], USAGE_UNIT)
             if yearly_charge_list[i] is not None:
                 sensor_updater.update(YEARLY_CHARGE_SENSOR_NAME + prefix, None, yearly_charge_list[i], BALANCE_UNIT)
             if month_charge_list[i] is not None:
-                sensor_updater.update(MONTH_CHARGE_SENSOR_NAME + prefix, month_list[i], month_charge_list[i], BALANCE_UNIT, month=True)
+                sensor_updater.update(MONTH_CHARGE_SENSOR_NAME + prefix, month_list[i], month_charge_list[i], BALANCE_UNIT)
             if month_usage_list[i] is not None:
-                sensor_updater.update(MONTH_USAGE_SENSOR_NAME + prefix, month_list[i], month_usage_list[i], USAGE_UNIT, month=True)
+                sensor_updater.update(MONTH_USAGE_SENSOR_NAME + prefix, month_list[i], month_usage_list[i], USAGE_UNIT)
         logging.info("state-refresh task run successfully!")
     except Exception as e:
         logging.error(f"state-refresh task failed, reason is {e}")
@@ -93,7 +94,7 @@ def logger_init(level: str):
     logging.getLogger("urllib3").setLevel(logging.CRITICAL)
     formater = logging.Formatter("%(asctime)s  [%(levelname)-8s] ---- %(message)s", "%Y-%m-%d %H:%M:%S")
     sh = logging.StreamHandler(stream=sys.stdout)
-    sh.setFormatter(formater)
+    sh.setFormatter(format)
     logger.addHandler(sh)
 
 

@@ -13,7 +13,7 @@ class SensorUpdater:
         self.base_url = base_url[:-1] if base_url.endswith("/") else base_url
         self.token = token
 
-    def update(self, sensorName: str, present_date: str or None, sensorState: float, sensorUnit: str, month=False):
+    def update(self, sensorName: str, present_date: str or None, sensorState: float, sensorUnit: str):
         """
         Update the sensor state
         :param sensorName: 此为id，不是name
@@ -28,10 +28,6 @@ class SensorUpdater:
             "Authorization": "Bearer " + token
 
         }
-        if month:
-            last_updated = datetime.now().strftime("%Y-%m")
-        else:
-            last_updated = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f%z")
 
         if present_date:
             request_body = {
