@@ -56,14 +56,14 @@ def main():
         time.sleep(1)
 
 
-def run_task(data_fetcher: DataFetcher, sensor_updater: SensorUpdater):
+def run_task(data_fetcher: DataFetcher, updater: SensorUpdater):
     try:
         user_id_list, balance_list, last_daily_date_list, last_daily_usage_list, yearly_charge_list, yearly_usage_list, month_list, month_usage_list, month_charge_list = data_fetcher.fetch()
         # user_id_list, balance_list, last_daily_date_list, last_daily_usage_list, yearly_charge_list, yearly_usage_list, month_list, month_usage_list, month_charge_list = ['123456'],[58.1],['2024-05-12'],[3.0],['239.1'],['533'],['2024-04-01-2024-04-30'],['118'],['52.93']
         for i in range(0, len(user_id_list)):
             prefix = f"_{user_id_list[i]}" if len(user_id_list) > 1 else ""
             if balance_list[i] is not None:
-                sensor_updater.update(BALANCE_SENSOR_NAME + prefix, None, balance_list[i], BALANCE_UNIT)
+                updater.update(BALANCE_SENSOR_NAME + prefix, None, balance_list[i], BALANCE_UNIT)
                 if balance_list[i] < BALANCE and RECHARGE_NOTIFY:
                     for token in PUSHPLUS_TOKEN:
                         title= '电费余额不足提醒' 
@@ -72,16 +72,16 @@ def run_task(data_fetcher: DataFetcher, sensor_updater: SensorUpdater):
                         requests.get(url)
                         logging.info(f'The current balance of user id {user_id_list[i]} is {balance_list[i]} CNY less than {BALANCE}CNY, notice has been sent, please pay attention to check and recharge.')
             if last_daily_usage_list[i] is not None:
-                sensor_updater.update(DAILY_USAGE_SENSOR_NAME + prefix, last_daily_date_list[i], last_daily_usage_list[i], USAGE_UNIT)
-                sensor_updater.update(DAILY_USAGE_SENSOR_NAME + prefix, datetime.now().strftime('%Y-%m-%d'), 0.0, USAGE_UNIT)
+                updater.update(DAILY_USAGE_SENSOR_NAME + prefix, last_daily_date_list[i], last_daily_usage_list[i], USAGE_UNIT)
+                updater.update(DAILY_USAGE_SENSOR_NAME + prefix, datetime.now().strftime('%Y-%m-%d'), 0.0, USAGE_UNIT)
             if yearly_usage_list[i] is not None:
-                sensor_updater.update(YEARLY_USAGE_SENSOR_NAME + prefix, None, yearly_usage_list[i], USAGE_UNIT)
+                updater.update(YEARLY_USAGE_SENSOR_NAME + prefix, None, yearly_usage_list[i], USAGE_UNIT)
             if yearly_charge_list[i] is not None:
-                sensor_updater.update(YEARLY_CHARGE_SENSOR_NAME + prefix, None, yearly_charge_list[i], BALANCE_UNIT)
+                updater.update(YEARLY_CHARGE_SENSOR_NAME + prefix, None, yearly_charge_list[i], BALANCE_UNIT)
             if month_charge_list[i] is not None:
-                sensor_updater.update(MONTH_CHARGE_SENSOR_NAME + prefix, month_list[i], month_charge_list[i], BALANCE_UNIT)
+                updater.update(MONTH_CHARGE_SENSOR_NAME + prefix, month_list[i], month_charge_list[i], BALANCE_UNIT)
             if month_usage_list[i] is not None:
-                sensor_updater.update(MONTH_USAGE_SENSOR_NAME + prefix, month_list[i], month_usage_list[i], USAGE_UNIT)
+                updater.update(MONTH_USAGE_SENSOR_NAME + prefix, month_list[i], month_usage_list[i], USAGE_UNIT)
         logging.info("state-refresh task run successfully!")
     except Exception as e:
         logging.error(f"state-refresh task failed, reason is {e}")
@@ -94,7 +94,7 @@ def logger_init(level: str):
     logging.getLogger("urllib3").setLevel(logging.CRITICAL)
     formater = logging.Formatter("%(asctime)s  [%(levelname)-8s] ---- %(message)s", "%Y-%m-%d %H:%M:%S")
     sh = logging.StreamHandler(stream=sys.stdout)
-    sh.setFormatter(format)
+    sh.setFormatter(formater)
     logger.addHandler(sh)
 
 
