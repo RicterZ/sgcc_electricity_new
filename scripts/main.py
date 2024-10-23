@@ -73,7 +73,7 @@ def run_task(data_fetcher: DataFetcher, updater: SensorUpdater):
                         logging.info(f'The current balance of user id {user_id_list[i]} is {balance_list[i]} CNY less than {BALANCE}CNY, notice has been sent, please pay attention to check and recharge.')
             if last_daily_usage_list[i] is not None:
                 updater.update(DAILY_USAGE_SENSOR_NAME + prefix, last_daily_date_list[i], last_daily_usage_list[i], USAGE_UNIT)
-                updater.update(DAILY_USAGE_SENSOR_NAME + prefix, datetime.now().strftime('%Y-%m-%d'), 0.0, USAGE_UNIT)
+                # updater.update(DAILY_USAGE_SENSOR_NAME + prefix, datetime.now().strftime('%Y-%m-%d'), 0.0, USAGE_UNIT)
             if yearly_usage_list[i] is not None:
                 updater.update(YEARLY_USAGE_SENSOR_NAME + prefix, None, yearly_usage_list[i], USAGE_UNIT)
             if yearly_charge_list[i] is not None:
